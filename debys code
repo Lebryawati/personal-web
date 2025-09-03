@@ -1,0 +1,96 @@
+<section id="booking">
+  <h2>Booking Wisata</h2>
+  <form id="bookingForm">
+    <input type="text" id="nama" placeholder="Nama" required>
+    <input type="text" id="paket" placeholder="Paket Wisata" required>
+    <input type="date" id="tanggal" required>
+    <button type="submit">Kirim Booking</button>
+  </form>
+
+  <h3>Daftar Booking</h3>
+  <ul id="bookingList"></ul>
+</section>
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Website Desa Wisata Tondok Banga' siap!");
+
+  // ===== Booking Wisata =====
+  const bookingForm = document.getElementById("bookingForm");
+  const bookingList = document.getElementById("bookingList");
+
+  // Ambil data dari localStorage
+  let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+  function renderBookings() {
+    bookingList.innerHTML = "";
+    bookings.forEach((b, i) => {
+      const li = document.createElement("li");
+      li.textContent = `${b.nama} - ${b.paket} (${b.tanggal})`;
+      bookingList.appendChild(li);
+    });
+  }
+
+  renderBookings();
+
+  bookingForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nama = document.getElementById("nama").value;
+    const paket = document.getElementById("paket").value;
+    const tanggal = document.getElementById("tanggal").value;
+
+    bookings.push({ nama, paket, tanggal });
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+    renderBookings();
+    bookingForm.reset();
+  });
+});
+<section id="event">
+  <h2>Kelola Event</h2>
+  <form id="eventForm">
+    <input type="text" id="eventNama" placeholder="Nama Event" required>
+    <input type="date" id="eventTanggal" required>
+    <button type="submit">Tambah Event</button>
+  </form>
+  <table id="eventTable">
+    <tr><th>Nama Event</th><th>Tanggal</th><th>Aksi</th></tr>
+  </table>
+</section>
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("Admin Panel Desa Wisata Tondok Banga' siap!");
+
+  // ===== Kelola Event =====
+  const eventForm = document.getElementById("eventForm");
+  const eventTable = document.getElementById("eventTable");
+
+  let events = JSON.parse(localStorage.getItem("events")) || [
+    { nama: "Festival Budaya Toraja", tanggal: "2025-09-20" },
+    { nama: "Upacara Rambu Solo'", tanggal: "2025-10-15" }
+  ];
+
+  function renderEvents() {
+    eventTable.innerHTML = "<tr><th>Nama Event</th><th>Tanggal</th><th>Aksi</th></tr>";
+    events.forEach((ev, i) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${ev.nama}</td><td>${ev.tanggal}</td>
+      <td><button onclick="hapusEvent(${i})">Hapus</button></td>`;
+      eventTable.appendChild(row);
+    });
+  }
+
+  renderEvents();
+
+  eventForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const nama = document.getElementById("eventNama").value;
+    const tanggal = document.getElementById("eventTanggal").value;
+    events.push({ nama, tanggal });
+    localStorage.setItem("events", JSON.stringify(events));
+    renderEvents();
+    eventForm.reset();
+  });
+
+  window.hapusEvent = function (i) {
+    events.splice(i, 1);
+    localStorage.setItem("events", JSON.stringify(events));
+    renderEvents();
+  };
+});
